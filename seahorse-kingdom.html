@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海马王国</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(180deg, #0A4D68 0%, #087CA7 50%, #7FCDCD 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        /* 手机框架 */
+        .phone {
+            max-width: 400px;
+            margin: 20px auto;
+            background: linear-gradient(180deg, #e8f4f8 0%, #d4e9f7 100%);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            position: relative;
+            min-height: 700px;
+        }
+        
+        /* 页面切换 */
+        .page {
+            display: none;
+            min-height: 700px;
+            padding-bottom: 70px;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* 导航栏 */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            background: #0A4D68;
+            color: white;
+        }
+        
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+        
+        .nav-text {
+            font-size: 11px;
+        }
+        
+        /* 顶部状态栏 */
+        .header {
+            background: linear-gradient(135deg, #0A4D68, #087CA7);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 15px;
+            font-size: 18px;
+        }
+        
+        /* 资产栏 */
+        .asset-bar {
+            background: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .asset-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #333;
+            background: #f5f5f5;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+        
+        .asset-icon {
+            font-size: 16px;
+        }
+        
+        .asset-value {
+            font-weight: bold;
+            color: #0A4D68;
+        }
+        
+        /* 主展示区 */
+        .main-display {
+            height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ocean-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at bottom, #7FCDCD 0%, transparent 70%),
+                linear-gradient(180deg, transparent 0%, rgba(10, 77, 104, 0.3) 100%);
+        }
+        
+        .seahorse-group {
+            font-size: 80px;
+            display: flex;
+            gap: 10px;
+            animation: swim 3s ease-in-out infinite;
+            z-index: 1;
+        }
+        
+        @keyframes swim {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        
+        .harvest-hint {
+            position: absolute;
+            bottom: 10px;
+            background: rgba(255,107,53,0.9);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        /* 功能入口 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .feature-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0A4D68;
+        }
+        
+        .feature-desc {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        /* 公告栏 */
+        .notice-bar {
+            background: rgba(255,215,0,0.2);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: #0A4D68;
+        }
+        
+        /* 养成页 */
+        .seahorse-list {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        
+        .seahorse-card {
+            min-width: 100px;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .seahorse-card .emoji {
+            font-size: 50px;
+        }
+        
+        .seahorse-card .name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .seahorse-card .level {
+            font-size: 12px;
+            color: #FF6B35;
+        }
+        
+        .seahorse-card.selected {
+            border: 3px solid #0A4D68;
+        }
+        
+        /* 当前选中海马 */
+        .current-seahorse {
+            background: white;
+            margin: 15px;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .current-seahorse .display {
+            text-align: center;
+            font-size: 80px;
+            margin-bottom: 15px;
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .current-seahorse .info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-label {
+            color: #888;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn.feed {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+        }
+        
+        .action-btn.clean {
+            background: linear-gradient(135deg, #7FCDCD, #5DBEBE);
+            color: white;
+        }
+        
+        .action-btn.play {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .mature-hint {
+            text-align: center;
+            margin-top: 15px;
+            color: #0A4D68;
+            font-size: 13px;
+        }
+        
+        /* 繁殖页 */
+        .breeding-area {
+            padding: 20px;
+        }
+        
+        .breeding-pair {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .breed-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            width: 120px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .breed-card .emoji {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+        
+        .breed-card .name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .breed-card.male {
+            border: 3px solid #4169E1;
+        }
+        
+        .breed-card.female {
+            border: 3px solid #FF69B4;
+        }
+        
+        .heart-icon {
+            font-size: 30px;
+            animation: heartbeat 1s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .breeding-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .breeding-info .rate {
+            font-size: 24px;
+            color: #0A4D68;
+            font-weight: bold;
+        }
+        
+        .breeding-info .output {
+            font-size: 14px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .breed-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .breeding-history {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .breeding-history h3 {
+            font-size: 14px;
+            color: #0A4D68;
+            margin-bottom: 10px;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+        }
+        
+        /* 商城页 */
+        .shop-header {
+            background: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .shop-tabs {
+            display: flex;
+            gap: 10px;
+            padding: 10px 15px;
+            overflow-x: auto;
+            background: white;
+        }
+        
+        .shop-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .shop-tab.active {
+            background: #0A4D68;
+            color: white;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 15px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .product-img {
+            height: 100px;
+            background: linear-gradient(135deg, #e8f4f8, #d4e9f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+        }
+        
+        .product-info {
+            padding: 12px;
+        }
+        
+        .product-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .price-value {
+            color: #FF6B35;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .exchange-btn {
+            width: 100%;
+            padding: 8px;
+            background: #0A4D68;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 13px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        
+        /* 个人中心 */
+        .profile-header {
+            background: linear-gradient(135deg, #0A4D68, #087CA7);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+        }
+        
+        .username {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .user-level {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .menu-list {
+            background: white;
+            margin: 15px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-item .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .menu-item .icon {
+            font-size: 20px;
+        }
+        
+        .menu-item .text {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .menu-item .arrow {
+            color: #ccc;
+        }
+        
+        .invite-badge {
+            background: #FF6B35;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        /* 弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 300px;
+            animation: popIn 0.3s ease;
+        }
+        
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0A4D68;
+            margin-bottom: 10px;
+        }
+        
+        .modal-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .modal-btn {
+            padding: 12px 30px;
+            background: #0A4D68;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <div class="header">
+                <h1>🐴 海马王国</h1>
+                <div class="header-icons">
+                    <span>⚙️</span>
+                    <span>📩</span>
+                </div>
+            </div>
+            
+            <div class="asset-bar">
+                <div class="asset-item">
+                    <span class="asset-icon">💰</span>
+                    <span class="asset-value">1280</span>
+                </div>
+                <div class="asset-item">
+                    <span class="asset-icon">🎫</span>
+                    <span class="asset-value">56</span>
+                </div>
+                <div class="asset-item">
+                    <span class="asset-icon">⚡</span>
+                    <span class="asset-value">88</span>
+                </div>
+            </div>
+            
+            <div class="main-display">
+                <div class="ocean-bg"></div>
+                <div class="seahorse-group">
+                    <span>🐴</span>
+                    <span>🐴</span>
+                    <span>🐴</span>
+                </div>
+                <div class="harvest-hint">+2h后可收获</div>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card" onclick="switchPage('care')">
+                    <div class="feature-icon">🐠</div>
+                    <div class="feature-name">养成</div>
+                    <div class="feature-desc">精心照料</div>
+                </div>
+                <div class="feature-card" onclick="switchPage('breed')">
+                    <div class="feature-icon">❤️</div>
+                    <div class="feature-name">繁殖</div>
+                    <div class="feature-desc">繁衍后代</div>
+                </div>
+                <div class="feature-card" onclick="switchPage('task')">
+                    <div class="feature-icon">📋</div>
+                    <div class="feature-name">任务</div>
+                    <div class="feature-desc">每日奖励</div>
+                </div>
+                <div class="feature-card" onclick="switchPage('shop')">
+                    <div class="feature-icon">🛒</div>
+                    <div class="feature-name">商城</div>
+                    <div class="feature-desc">兑换好物</div>
+                </div>
+            </div>
+            
+            <div class="notice-bar">
+                <span>📢</span>
+                <span>今日活跃: 128人 在线</span>
+            </div>
+        </div>
+        
+        <!-- 养成页 -->
+        <div class="page" id="page-care">
+            <div class="header">
+                <span onclick="switchPage('home')">← 返回</span>
+                <h1>我的海马</h1>
+                <span></span>
+            </div>
+            
+            <div class="seahorse-list">
+                <div class="seahorse-card selected">
+                    <div class="emoji">🐴</div>
+                    <div class="name">小马达</div>
+                    <div class="level">Lv.3 优质</div>
+                </div>
+                <div class="seahorse-card">
+                    <div class="emoji">🐴</div>
+                    <div class="name">小花</div>
+                    <div class="level">Lv.2 普通</div>
+                </div>
+                <div class="seahorse-card">
+                    <div class="emoji">🐴</div>
+                    <div class="name">大王</div>
+                    <div class="level">Lv.5 精品</div>
+                </div>
+                <div class="seahorse-card">
+                    <div class="emoji">🐴</div>
+                    <div class="name">小美</div>
+                    <div class="level">Lv.1 普通</div>
+                </div>
+            </div>
+            
+            <div class="current-seahorse">
+                <div class="display">🐴</div>
+                <div class="info">
+                    <div class="info-item">
+                        <span class="info-label">名字</span>
+                        <span>小马达</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">等级</span>
+                        <span>Lv.3 优质</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">经验</span>
+                        <span>80%</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">饱食</span>
+                        <span>90%</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">状态</span>
+                        <span>健康 😊</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">体力</span>
+                        <span>85%</span>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn feed" onclick="showModal('喂食', '🍜 +20饱食')">🍜 喂食</button>
+                    <button class="action-btn clean" onclick="showModal('换水', '💧 +10体力')">💧 换水</button>
+                    <button class="action-btn play" onclick="showModal('逗玩', '❤️ +15经验')">❤️ 逗玩</button>
+                </div>
+            </div>
+            
+            <div class="mature-hint">🌱 预计12:00 成熟可繁殖</div>
+        </div>
+        
+        <!-- 繁殖页 -->
+        <div class="page" id="page-breed">
+            <div class="header">
+                <span onclick="switchPage('home')">← 返回</span>
+                <h1>繁殖中心</h1>
+                <span></span>
+            </div>
+            
+            <div class="breeding-area">
+                <div class="breeding-pair">
+                    <div class="breed-card female">
+                        <div class="emoji">🐴</div>
+                        <div class="name">小花</div>
+                    </div>
+                    <div class="heart-icon">❤️</div>
+                    <div class="breed-card male">
+                        <div class="emoji">🐴</div>
+                        <div class="name">大王</div>
+                    </div>
+                </div>
+                
+                <div class="breeding-info">
+                    <div class="rate">配对成功率: 85%</div>
+                    <div class="output">预计产出: 2-4只小海马</div>
+                </div>
+                
+                <button class="breed-btn" onclick="showModal('繁殖成功', '🎉 获得3只小海马!')">
+                    🐴 开始繁殖
+                </button>
+                
+                <div class="breeding-history">
+                    <h3>繁殖记录</h3>
+                    <div class="history-item">
+                        <span>🐴</span>
+                        <span>12:30 小花 × 大王</span>
+                        <span style="color:#FF6B35">→ 3只</span>
+                    </div>
+                    <div class="history-item">
+                        <span>🐴</span>
+                        <span>昨天 小美 × 大海</span>
+                        <span style="color:#FF6B35">→ 2只</span>
+                    </div>
+                    <div class="history-item">
+                        <span>🐴</span>
+                        <span>前天 小花 × 小王</span>
+                        <span style="color:#FF6B35">→ 4只</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 任务页 -->
+        <div class="page" id="page-task">
+            <div class="header">
+                <span onclick="switchPage('home')">← 返回</span>
+                <h1>每日任务</h1>
+                <span></span>
+            </div>
+            
+            <div style="padding: 20px;">
+                <div style="background:white;border-radius:15px;padding:20px;margin-bottom:15px;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                        <span style="font-weight:bold;">今日任务</span>
+                        <span style="color:#888;">已完成 3/5</span>
+                    </div>
+                    
+                    <div style="background:#f5f5f5;border-radius:10px;padding:15px;margin-bottom:10px;">
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>🌱 喂食5次</span>
+                            <span style="color:#FF6B35;font-weight:bold;">+30券</span>
+                        </div>
+                        <div style="background:#ddd;height:8px;border-radius:4px;margin-top:8px;">
+                            <div style="background:#0A4D68;width:80%;height:100%;border-radius:4px;"></div>
+                        </div>
+                        <div style="text-align:right;font-size:12px;color:#888;margin-top:5px;">4/5</div>
+                    </div>
+                    
+                    <div style="background:#f5f5f5;border-radius:10px;padding:15px;margin-bottom:10px;">
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>🔄 换水3次</span>
+                            <span style="color:#888;text-decoration:line-through;">+20券</span>
+                        </div>
+                        <div style="background:#0A4D68;height:8px;border-radius:4px;margin-top:8px;width:100%;"></div>
+                        <div style="text-align:right;font-size:12px;color:#0A4D68;margin-top:5px;">已完成</div>
+                    </div>
+                    
+                    <div style="background:#f5f5f5;border-radius:10px;padding:15px;">
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>📖 了解海马价值</span>
+                            <span style="color:#FF6B35;font-weight:bold;">+50券</span>
+                        </div>
+                        <button style="background:#0A4D68;color:white;border:none;padding:8px 20px;border-radius:15px;margin-top:10px;cursor:pointer;">去学习</button>
+                    </div>
+                </div>
+                
+                <div style="background:white;border-radius:15px;padding:20px;">
+                    <div style="font-weight:bold;margin-bottom:15px;">🏆 成就奖励</div>
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0;">
+                        <span style="font-size:30px;">🐴</span>
+                        <div style="flex:1;">
+                            <div>养殖新手</div>
+                            <div style="font-size:12px;color:#888;">养10只海马</div>
+                        </div>
+                        <span style="color:#0A4D68;">8/10</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;">
+                        <span style="font-size:30px;">👑</span>
+                        <div style="flex:1;">
+                            <div>海马大师</div>
+                            <div style="font-size:12px;color:#888;">繁殖100只</div>
+                        </div>
+                        <span style="color:#888;">32/100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 商城页 -->
+        <div class="page" id="page-shop">
+            <div class="header">
+                <span onclick="switchPage('home')">← 返回</span>
+                <h1>海马商城</h1>
+                <span></span>
+            </div>
+            
+            <div class="shop-header">
+                <div style="display:flex;align-items:center;gap:5px;">
+                    <span>🎫</span>
+                    <span style="font-weight:bold;">余额: 256券</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;color:#888;">
+                    <span>💰</span>
+                    <span>金币: 520</span>
+                </div>
+            </div>
+            
+            <div class="shop-tabs">
+                <div class="shop-tab active">全部</div>
+                <div class="shop-tab">食品</div>
+                <div class="shop-tab">酒水</div>
+                <div class="shop-tab">保健</div>
+                <div class="shop-tab">礼盒</div>
+            </div>
+            
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img">🐴</div>
+                    <div class="product-info">
+                        <div class="product-name">海马干品 50g</div>
+                        <div class="product-price">
+                            <span class="price-value">50券</span>
+                        </div>
+                        <button class="exchange-btn" onclick="showModal('兑换成功', '🐴 海马干品已加入仓库!')">兑换</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🐴</div>
+                    <div class="product-info">
+                        <div class="product-name">鲜活海马 5只</div>
+                        <div class="product-price">
+                            <span class="price-value">80券</span>
+                        </div>
+                        <button class="exchange-btn" onclick="showModal('兑换成功', '🐴 鲜活海马已加入仓库!')">兑换</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🍷</div>
+                    <div class="product-info">
+                        <div class="product-name">海马酒 500ml</div>
+                        <div class="product-price">
+                            <span class="price-value">200券</span>
+                        </div>
+                        <button class="exchange-btn" onclick="showModal('兑换成功', '🍷 海马酒已加入仓库!')">兑换</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">💊</div>
+                    <div class="product-info">
+                        <div class="product-name">海马粉 100g</div>
+                        <div class="product-price">
+                            <span class="price-value">150券</span>
+                        </div>
+                        <button class="exchange-btn" onclick="showModal('兑换成功', '💊 海马粉已加入仓库!')">兑换</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🎁</div>
+                    <div class="product-info">
+                        <div class="product-name">海马礼盒</div>
+                        <div class="product-price">
+                            <span class="price-value">500券</span>
+                        </div>
+                        <button class="exchange-btn" onclick="showModal('兑换成功', '🎁 礼盒已加入仓库!')">兑换</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🏅</div>
+                    <div class="product-info">
+                        <div class="product-name">VIP月卡</div>
+                        <div class="product-price">
+                            <span class="price-value">300券</span>
+                        </div>
+                        <button class="exchange-btn" onclick="showModal('兑换成功', '🏅 VIP特权已开通!')">兑换</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 个人中心 -->
+        <div class="page" id="page-profile">
+            <div class="profile-header">
+                <div class="avatar">🐴</div>
+                <div class="username">小龙用户</div>
+                <div class="user-level">VIP3 会员</div>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-value">128</div>
+                        <div class="stat-label">海马</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">256</div>
+                        <div class="stat-label">海马券</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">订单</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-list">
+                <div class="menu-item">
+                    <div class="left">
+                        <span class="icon">📦</span>
+                        <span class="text">我的订单</span>
+                    </div>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <div class="left">
+                        <span class="icon">🐴</span>
+                        <span class="text">我的海马</span>
+                    </div>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <div class="left">
+                        <span class="icon">💰</span>
+                        <span class="text">海马券充值</span>
+                    </div>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <div class="left">
+                        <span class="icon">👥</span>
+                        <span class="text">邀请好友</span>
+                    </div>
+                    <span class="invite-badge">+50券/人</span>
+                </div>
+                <div class="menu-item">
+                    <div class="left">
+                        <span class="icon">🎧</span>
+                        <span class="text">客服帮助</span>
+                    </div>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <div class="left">
+                        <span class="icon">⚙️</span>
+                        <span class="text">设置</span>
+                    </div>
+                    <span class="arrow">›</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="nav-bar">
+            <div class="nav-item active" onclick="switchPage('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">首页</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('care')">
+                <span class="nav-icon">🐴</span>
+                <span class="nav-text">养成</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('breed')">
+                <span class="nav-icon">❤️</span>
+                <span class="nav-text">繁殖</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('shop')">
+                <span class="nav-icon">🛒</span>
+                <span class="nav-text">商城</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('profile')">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">我的</span>
+            </div>
+        </div>
+        
+        <!-- 弹窗 -->
+        <div class="modal" id="modal">
+            <div class="modal-content">
+                <div class="modal-icon" id="modal-icon">🎉</div>
+                <div class="modal-title" id="modal-title">操作成功</div>
+                <div class="modal-desc" id="modal-desc">内容</div>
+                <button class="modal-btn" onclick="closeModal()">确定</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchPage(page) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // 显示目标页面
+            document.getElementById('page-' + page).classList.add('active');
+            
+            // 更新导航状态
+            const navMap = {
+                'home': 0,
+                'care': 1,
+                'breed': 2,
+                'shop': 3,
+                'profile': 4
+            };
+            document.querySelectorAll('.nav-item').forEach((item, index) => {
+                item.classList.toggle('active', index === navMap[page]);
+            });
+        }
+        
+        function showModal(title, desc) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-desc').textContent = desc;
+            
+            // 根据内容设置图标
+            const icon = document.getElementById('modal-icon');
+            if (title.includes('成功') || title.includes('繁殖')) {
+                icon.textContent = '🎉';
+            } else if (title.includes('喂食')) {
+                icon.textContent = '🍜';
+            } else if (title.includes('换水')) {
+                icon.textContent = '💧';
+            } else if (title.includes('逗玩')) {
+                icon.textContent = '❤️';
+            } else {
+                icon.textContent = '✅';
+            }
+            
+            document.getElementById('modal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+        
+        // 点击弹窗外部关闭
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
