@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>海马王国</title>
+    <link rel="icon" type="image/png" href="seahorse-icon.png">
     <style>
         * {
             margin: 0;
@@ -12,22 +13,55 @@
         }
         
         body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(180deg, #0A4D68 0%, #087CA7 50%, #7FCDCD 100%);
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(180deg, #1a5f7a 0%, #2d8fb0 40%, #57c5b6 100%);
             min-height: 100vh;
             padding-bottom: 80px;
+        }
+        
+        /* 海洋气泡装饰 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 2px, transparent 2px),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.1) 3px, transparent 3px),
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 4px, transparent 4px);
+            pointer-events: none;
+            z-index: -1;
         }
         
         /* 手机框架 */
         .phone {
             max-width: 400px;
             margin: 20px auto;
-            background: linear-gradient(180deg, #e8f4f8 0%, #d4e9f7 100%);
-            border-radius: 30px;
+            background: linear-gradient(180deg, #e8f4f8 0%, #d4e9f7 50%, #c5e4ed 100%);
+            border-radius: 35px;
             overflow: hidden;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.25),
+                0 0 0 3px rgba(255,255,255,0.2),
+                inset 0 0 50px rgba(255,255,255,0.3);
             position: relative;
             min-height: 700px;
+        }
+        
+        /* 手机顶部装饰 */
+        .phone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background: #1a5f7a;
+            border-radius: 0 0 15px 15px;
+            z-index: 10;
         }
         
         /* 页面切换 */
@@ -49,12 +83,14 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 400px;
-            background: white;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            padding: 12px 0 20px;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.15);
             z-index: 100;
+            border-radius: 25px 25px 0 0;
         }
         
         .nav-item {
@@ -62,14 +98,16 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            padding: 5px 15px;
-            border-radius: 15px;
-            transition: all 0.3s;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .nav-item.active {
-            background: #0A4D68;
+            background: linear-gradient(135deg, #1a5f7a, #2d8fb0);
             color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(26, 95, 122, 0.4);
         }
         
         .nav-item.active .nav-icon {
@@ -87,54 +125,80 @@
         
         /* 顶部状态栏 */
         .header {
-            background: linear-gradient(135deg, #0A4D68, #087CA7);
+            background: linear-gradient(135deg, #1a5f7a, #2d8fb0, #57c5b6);
             color: white;
-            padding: 15px 20px;
+            padding: 20px 20px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
         }
         
         .header h1 {
-            font-size: 18px;
+            font-size: 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .header-icons {
             display: flex;
-            gap: 15px;
-            font-size: 18px;
+            gap: 18px;
+            font-size: 20px;
         }
         
         /* 资产栏 */
         .asset-bar {
-            background: white;
-            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,250,255,0.9));
+            padding: 14px 20px;
             display: flex;
             justify-content: space-around;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(26, 95, 122, 0.1);
         }
         
         .asset-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 14px;
+            gap: 6px;
+            font-size: 13px;
             color: #333;
-            background: #f5f5f5;
-            padding: 5px 12px;
-            border-radius: 20px;
+            background: linear-gradient(135deg, #ffffff, #f5f9fb);
+            padding: 8px 16px;
+            border-radius: 25px;
+            border: 1px solid rgba(26, 95, 122, 0.15);
+            transition: all 0.3s;
+        }
+        
+        .asset-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(26, 95, 122, 0.2);
         }
         
         .asset-icon {
-            font-size: 16px;
+            font-size: 18px;
         }
         
         .asset-value {
-            font-weight: bold;
-            color: #0A4D68;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1a5f7a, #2d8fb0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         /* 主展示区 */
@@ -169,6 +233,18 @@
             50% { transform: translateY(-15px) rotate(5deg); }
         }
         
+        .seahorse-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            animation: iconSwim 3s ease-in-out infinite;
+        }
+        
+        @keyframes iconSwim {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        
         .harvest-hint {
             position: absolute;
             bottom: 10px;
@@ -188,29 +264,44 @@
         }
         
         .feature-card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
+            background: linear-gradient(145deg, #ffffff, #f0f8ff);
+            border-radius: 24px;
+            padding: 24px 20px;
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08), 0 2px 10px rgba(26, 95, 122, 0.1);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.5);
         }
         
         .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 5px 20px rgba(26, 95, 122, 0.2);
+        }
+        
+        .feature-card:active {
+            transform: translateY(-2px) scale(0.98);
         }
         
         .feature-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+            font-size: 44px;
+            margin-bottom: 12px;
+            display: inline-block;
+            animation: iconBounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
         
         .feature-name {
-            font-size: 16px;
-            font-weight: bold;
-            color: #0A4D68;
+            font-size: 17px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1a5f7a, #2d8fb0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .feature-desc {
@@ -240,30 +331,41 @@
         
         .seahorse-card {
             min-width: 100px;
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
+            background: linear-gradient(145deg, #ffffff, #f0f8ff);
+            border-radius: 20px;
+            padding: 18px 15px;
             text-align: center;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .seahorse-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
         
         .seahorse-card .emoji {
             font-size: 50px;
+            margin-bottom: 8px;
         }
         
         .seahorse-card .name {
             font-size: 14px;
-            font-weight: bold;
-            color: #333;
+            font-weight: 700;
+            color: #1a5f7a;
         }
         
         .seahorse-card .level {
             font-size: 12px;
-            color: #FF6B35;
+            color: #57c5b6;
+            font-weight: 600;
         }
         
         .seahorse-card.selected {
-            border: 3px solid #0A4D68;
+            border: 3px solid #1a5f7a;
+            background: linear-gradient(145deg, #e8f4f8, #d4e9f7);
+            box-shadow: 0 5px 20px rgba(26, 95, 122, 0.3);
         }
         
         /* 当前选中海马 */
@@ -313,32 +415,39 @@
         
         .action-btn {
             flex: 1;
-            padding: 12px;
+            padding: 14px 10px;
             border: none;
             border-radius: 25px;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
         
         .action-btn.feed {
             background: linear-gradient(135deg, #FF6B35, #FF8C42);
             color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
         }
         
         .action-btn.clean {
-            background: linear-gradient(135deg, #7FCDCD, #5DBEBE);
+            background: linear-gradient(135deg, #2d8fb0, #57c5b6);
             color: white;
+            box-shadow: 0 4px 15px rgba(45, 143, 176, 0.4);
         }
         
         .action-btn.play {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
             color: white;
+            box-shadow: 0 4px 15px rgba(196, 69, 105, 0.4);
         }
         
         .action-btn:hover {
-            transform: scale(1.05);
+            transform: translateY(-3px) scale(1.02);
         }
         
         .mature-hint {
@@ -420,18 +529,32 @@
         
         .breed-btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            padding: 16px;
+            background: linear-gradient(135deg, #ff6b9d, #c44569, #ff6b9d);
+            background-size: 200% 200%;
             color: white;
             border: none;
             border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 17px;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            box-shadow: 0 6px 25px rgba(196, 69, 105, 0.4);
+            transition: all 0.3s;
+            animation: breedPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes breedPulse {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .breed-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(196, 69, 105, 0.5);
         }
         
         .breeding-history {
@@ -474,18 +597,25 @@
         }
         
         .shop-tab {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
             white-space: nowrap;
             cursor: pointer;
-            background: #f5f5f5;
+            background: #f0f8ff;
             color: #666;
+            transition: all 0.3s;
+        }
+        
+        .shop-tab:hover {
+            background: #e0f0f8;
         }
         
         .shop-tab.active {
-            background: #0A4D68;
+            background: linear-gradient(135deg, #1a5f7a, #2d8fb0);
             color: white;
+            box-shadow: 0 4px 15px rgba(26, 95, 122, 0.3);
         }
         
         .product-grid {
@@ -496,19 +626,39 @@
         }
         
         .product-card {
-            background: white;
-            border-radius: 15px;
+            background: linear-gradient(145deg, #ffffff, #f8fcff);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(26, 95, 122, 0.1);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
         
         .product-img {
-            height: 100px;
-            background: linear-gradient(135deg, #e8f4f8, #d4e9f7);
+            height: 110px;
+            background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 50%, #c5e4ed 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
+            font-size: 55px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-img::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
         }
         
         .product-info {
@@ -664,12 +814,14 @@
         }
         
         .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
+            background: linear-gradient(145deg, #ffffff, #f8fcff);
+            border-radius: 25px;
+            padding: 35px 30px;
             text-align: center;
-            max-width: 300px;
-            animation: popIn 0.3s ease;
+            max-width: 310px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: popIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(26, 95, 122, 0.1);
         }
         
         @keyframes popIn {
@@ -678,15 +830,25 @@
         }
         
         .modal-icon {
-            font-size: 60px;
-            margin-bottom: 15px;
+            font-size: 65px;
+            margin-bottom: 18px;
+            animation: iconWiggle 0.5s ease;
+        }
+        
+        @keyframes iconWiggle {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
         }
         
         .modal-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #0A4D68;
-            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1a5f7a, #2d8fb0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
         }
         
         .modal-desc {
@@ -711,7 +873,7 @@
         <!-- 首页 -->
         <div class="page active" id="page-home">
             <div class="header">
-                <h1>🐴 海马王国</h1>
+                <h1><img src="seahorse-icon.png" style="width:32px;height:32px;vertical-align:middle;"> 海马王国</h1>
                 <div class="header-icons">
                     <span>⚙️</span>
                     <span>📩</span>
@@ -736,9 +898,9 @@
             <div class="main-display">
                 <div class="ocean-bg"></div>
                 <div class="seahorse-group">
-                    <span>🐴</span>
-                    <span>🐴</span>
-                    <span>🐴</span>
+                    <img src="seahorse-icon.png" class="seahorse-icon">
+                    <img src="seahorse-icon.png" class="seahorse-icon">
+                    <img src="seahorse-icon.png" class="seahorse-icon">
                 </div>
                 <div class="harvest-hint">+2h后可收获</div>
             </div>
@@ -804,7 +966,9 @@
             </div>
             
             <div class="current-seahorse">
-                <div class="display">🐴</div>
+                <div class="display">
+                    <img src="seahorse-icon.png" style="width:100px;height:100px;object-fit:contain;">
+                </div>
                 <div class="info">
                     <div class="info-item">
                         <span class="info-label">名字</span>
